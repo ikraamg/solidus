@@ -47,6 +47,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'sprockets-rails', '!= 3.5.0'
   s.add_dependency 'state_machines-activerecord', '~> 0.6'
   s.add_dependency 'omnes', '~> 0.2.2'
+  s.add_dependency 'acts_as_tenant'
+  s.add_dependency 'byebug'
 
   s.post_install_message = <<-MSG
 -------------------------------------------------------------

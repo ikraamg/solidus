@@ -292,4 +292,10 @@ class Spree::StoreCredit < Spree::PaymentSource
       self.credit_type = Spree::StoreCreditType.find_by(name: credit_type_name)
     end
   end
+
+  def payment_method_id
+    super
+  rescue NoMethodError
+      nil
+  end
 end

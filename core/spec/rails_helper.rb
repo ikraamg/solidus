@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'byebug'
 
 ENV["RAILS_ENV"] ||= 'test'
 
@@ -39,10 +40,12 @@ RSpec.configure do |config|
   config.before :suite do
     FileUtils.rm_rf(Rails.configuration.active_storage.service_configurations[:test][:root]) unless (ENV['DISABLE_ACTIVE_STORAGE'] == 'true')
     DatabaseCleaner.clean_with :truncation
+    ActsAsTenant.current_tenant = Spree::Tenant.first_or_create!(name: 'default') if ActsAsTenant.current_tenant.nil?
   end
 
   config.before :each do
     Rails.cache.clear
+    ActsAsTenant.current_tenant = Spree::Tenant.first_or_create!(name: 'default') if ActsAsTenant.current_tenant.nil?
   end
 
   config.include Spree::TestingSupport::JobHelpers

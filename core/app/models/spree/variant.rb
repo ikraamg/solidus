@@ -165,7 +165,7 @@ module Spree
     # like an association, but really is an override.
     #
     def shipping_category
-      super || product_shipping_category
+      super || (product && product_shipping_category)
     end
 
     # @return [Integer] the variant's shipping category id
@@ -173,7 +173,7 @@ module Spree
     # This returns the product's shipping category if if the shipping category ID on the variant is nil.
     #
     def shipping_category_id
-      super || product_shipping_category_id
+      super || (product && product_shipping_category_id)
     end
 
     # Sets the cost_price for the variant.

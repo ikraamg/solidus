@@ -1125,7 +1125,7 @@ RSpec.describe Spree::Order, type: :model do
 
     context 'a reimbursement related refund exists' do
       let(:order) { refund.payment.order }
-      let(:refund) { create(:refund, reimbursement_id: 123, amount: 5, payment_amount: 14) }
+      let(:refund) { create(:refund, reimbursement: create(:reimbursement), amount: 5, payment_amount: 14) }
 
       it { is_expected.to eq false }
     end

@@ -95,6 +95,7 @@ module Spree
             defined?(Spree::UsersController)
           Spree::UsersController.protect_from_forgery with: :exception
         end
+        Spree::ActsAsTenantAppender.setup_tenant_aware_classes
       end
     end
   end

@@ -688,8 +688,8 @@ RSpec.describe Spree::Order, type: :model do
       order.email = 'user@example.com'
       allow(order).to receive(:ensure_promotions_eligible).and_return(true)
       allow(order).to receive(:ensure_line_item_variants_are_not_deleted).and_return(true)
+      allow(order).to receive_messages(validate_line_item_availability: true, line_items: [])
       allow(order).to receive_message_chain(:line_items, :present?).and_return(true)
-      allow(order).to receive_messages(validate_line_item_availability: true)
       expect(order).not_to receive(:payment_required?)
       expect(order).not_to receive(:process_payments!)
       order.next!

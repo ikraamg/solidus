@@ -23,11 +23,11 @@ module Spree
       end
 
       def activate
-        promotions.each do |promotion|
+        promotions.map { |promotion|
           if (line_item && promotion.eligible?(line_item, promotion_code: promotion_code(promotion))) || promotion.eligible?(order, promotion_code: promotion_code(promotion))
             promotion.activate(line_item:, order:, promotion_code: promotion_code(promotion))
           end
-        end
+        }.any?
       end
 
       private

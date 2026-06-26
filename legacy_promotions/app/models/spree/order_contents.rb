@@ -8,14 +8,14 @@ module Spree
       if order.update(params)
         unless order.completed?
           order.line_items = order.line_items.select { |li| li.quantity > 0 }
+          order.check_shipments_and_restart_checkout
           # Update totals, then check if the order is eligible for any cart promotions.
           # If we do not update first, then the item total will be wrong and ItemTotal
           # promotion rules would not be triggered.
           reload_totals
-          order.check_shipments_and_restart_checkout
-          ::Spree::PromotionHandler::Cart.new(order).activate
+          apply_cart_promotions
         end
-        reload_totals
+        reload_totals if order.completed?
         true
       else
         false
@@ -25,12 +25,15 @@ module Spree
     private
 
     def after_add_or_remove(line_item, options = {})
-      reload_totals
       shipment = options[:shipment]
       shipment.present? ? shipment.update_amounts : order.check_shipments_and_restart_checkout
-      ::Spree::PromotionHandler::Cart.new(order, line_item).activate
       reload_totals
+      apply_cart_promotions(line_item)
       line_item
+    end
+
+    def apply_cart_promotions(line_item = nil)
+      reload_totals if ::Spree::PromotionHandler::Cart.new(order, line_item).activate
     end
   end
 end

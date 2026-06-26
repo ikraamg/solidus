@@ -36,6 +36,10 @@ module Spree
           include_context "creates the adjustment"
           include_context "creates an order promotion"
 
+          it "returns true when an adjustment is created" do
+            expect(subject.activate).to be(true)
+          end
+
           context "for a non-sale promotion" do
             let(:promotion) { create(:promotion, apply_automatically: false) }
 
@@ -49,6 +53,10 @@ module Spree
               expect {
                 subject.activate
               }.to change { adjustable.adjustments.count }.by(0)
+            end
+
+            it "returns false when nothing is activated" do
+              expect(subject.activate).to be(false)
             end
           end
         end

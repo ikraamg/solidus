@@ -209,6 +209,13 @@ RSpec.describe SolidusPromotions::Conditions::Product, type: :model do
 
       it { is_expected.to be_falsey }
     end
+
+    context "when reused across line items" do
+      it "evaluates each line item on its own merits" do
+        expect(condition).not_to be_eligible(other_line_item)
+        expect(condition).to be_eligible(condition_line_item)
+      end
+    end
   end
 
   describe "#eligible?(price)" do

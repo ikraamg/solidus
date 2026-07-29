@@ -186,6 +186,23 @@ RSpec.describe SolidusPromotions::Conditions::Taxon, type: :model do
         expect(condition).not_to be_eligible(line_item)
       end
     end
+
+    context "when reused across line items" do
+      let(:order) { create :order_with_line_items, line_items_count: 2 }
+      let(:eligible_line_item) { order.line_items.first! }
+      let(:ineligible_line_item) { order.line_items.last! }
+
+      before do
+        eligible_line_item.product.taxons << taxon
+        condition.taxons << taxon
+        condition.save!
+      end
+
+      it "evaluates each line item on its own merits" do
+        expect(condition).not_to be_eligible(ineligible_line_item)
+        expect(condition).to be_eligible(eligible_line_item)
+      end
+    end
   end
 
   describe "#eligible?(price)" do

@@ -269,18 +269,31 @@ RSpec.describe Spree::Product, type: :model do
       context "when the product has no tax category" do
         let(:product) { create(:product, tax_category: nil) }
 
+        shared_examples "a memoized default tax category" do
+          it "queries the tax categories table once across repeated calls" do
+            product.tax_category
+
+            expect { 3.times { product.tax_category } }
+              .not_to make_database_queries(matching: /from .spree_tax_categories./i)
+          end
+        end
+
         context "and a default tax category exists" do
           let!(:default_tax_category) { create(:tax_category, is_default: true) }
 
           it "returns the default tax category" do
             expect(product.tax_category).to eq(default_tax_category)
           end
+
+          it_behaves_like "a memoized default tax category"
         end
 
         context "and no default tax category exists" do
           it "returns nil" do
             expect(product.tax_category).to be_nil
           end
+
+          it_behaves_like "a memoized default tax category"
         end
       end
     end

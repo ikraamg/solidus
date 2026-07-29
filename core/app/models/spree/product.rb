@@ -145,7 +145,7 @@ module Spree
 
     # @return [Spree::TaxCategory] tax category for this product, or the default tax category
     def tax_category
-      super || Spree::TaxCategory.find_by(is_default: true)
+      super || default_tax_category
     end
 
     # @return [Integer] tax category id for this product, or the default tax category id
@@ -304,6 +304,13 @@ module Spree
     end
 
     private
+
+    def default_tax_category
+      # `defined?` rather than `||=` so a store with no default category caches the nil too.
+      return @default_tax_category if defined?(@default_tax_category)
+
+      @default_tax_category = Spree::TaxCategory.default
+    end
 
     # Builds variants from a hash of option types & values
     def build_variants_from_option_values_hash

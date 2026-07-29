@@ -56,8 +56,9 @@ module Spree
     end
 
     def default_cart_tax_location
-      @default_cart_tax_location ||=
-        Spree::Tax::TaxLocation.new(country: Spree::Country.find_by(iso: cart_tax_country_iso))
+      @default_cart_tax_location ||= Spree::Tax::TaxLocation.new(
+        country: cart_tax_country_iso.presence && Spree::Country.find_by(iso: cart_tax_country_iso)
+      )
     end
 
     private

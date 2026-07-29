@@ -83,11 +83,11 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-      - uses: awalsh128/cache-apt-pkgs-action@v1
+      - name: Install libvips
         if: ${{ matrix.storage == 'activestorage' }}
-        name: Install libvips
-        with:
-          packages: libvips-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install -yq libvips-dev
       - name: Setup coverage
         id: setup-coverage
         if: ${{ inputs.coverage && matrix.rails == '8.0' && matrix.ruby == '3.4' }}

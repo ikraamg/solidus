@@ -38,6 +38,11 @@ RSpec.describe Spree::Store, type: :model do
       it "responds with an empty default_cart_tax_location" do
         expect(subject.default_cart_tax_location).to be_empty
       end
+
+      it "does not query for a country" do
+        expect { subject.default_cart_tax_location }
+          .not_to make_database_queries(matching: /from .spree_countries./i)
+      end
     end
 
     context "when there is a cart_tax_country_iso set" do
